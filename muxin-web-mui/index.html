@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>首页</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1, user-scalable=no">
+		<!-- <meta name="apple-mobile-web-app-capable" content="yes"> -->
+		<!-- <meta name="apple-mobile-web-app-status-bar-style" content="black"> -->
+		<script src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/mui.min.css">
+		<link rel="stylesheet" href="css/header.css">
+		<style type="text/css">
+			#list {
+				/*避免导航边框和列表背景边框重叠，看起来像两条边框似得；*/
+				margin-top: -1px;
+			}
+		</style>
+		<script type="text/javascript">
+			mui.init();
+			// 设置手机最顶层的状态栏样式
+			mui.plusReady(function(){
+				plus.navigator.setStatusBarStyle("light");
+				plus.navigator.setStatusBarBackground("#C9394A");
+			});
+		</script>
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav title">
+			<h1 class="mui-title title-color"><b>慕信</b></h1>
+		</header>
+
+		<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" tabindex="0">
+				<span class="mui-icon mui-icon-weixin"></span>
+				<span class="mui-tab-lable">慕信</span>
+			</a>
+			<a class="mui-tab-item" tabindex="1">
+				<span class="mui-icon mui-icon-phone"></span>
+				<span class="mui-tab-lable">通信录</span>
+			</a>
+			<a class="mui-tab-item" tabindex="2">
+				<span class="mui-icon mui-icon-paperplane"></span>
+				<span class="mui-tab-lable">发现</span>
+			</a>
+			<a class="mui-tab-item" tabindex="3">
+				<span class="mui-icon mui-icon-person"></span>
+				<span class="mui-tab-lable">我</span>
+			</a>
+		</nav>
+		
+		<script type="text/javascript" charset="utf-8">
+			var muxinArray = [
+				{
+					pageId: "chatlist.html",
+					pageUrl: "chatlist.html"
+				},
+				{
+					pageId: "contact.html",
+					pageUrl: "contact.html"
+				},
+				{
+					pageId: "discover.html",
+					pageUrl: "discover.html"
+				},
+				{
+					pageId: "me.html",
+					pageUrl: "me.html"
+				}
+			];
+
+			var muxinStyle = {
+				top: "44px",
+				bottom: "50px"
+			}
+
+			mui.plusReady(function() {
+				// 禁止返回到登录注册页面(禁止手机默认的返回键)
+				mui.back = function() {
+					return false;
+				}
+				
+				// 获取当前webview对象
+				var indexWebview = plus.webview.currentWebview();
+
+				// 向当前主页webview追加子页的4张webview对象
+				for (var i = 0; i < muxinArray.length; i++) {
+					var muxinPage = plus.webview.create(muxinArray[i].pageUrl, muxinArray[i].pageId, muxinStyle)
+					
+					// 隐藏webview窗口
+					muxinPage.hide();
+
+					// 追加每一个子页面到当前主页面
+					indexWebview.append(muxinPage);
+				}
+
+				// 默认显示页
+				plus.webview.show(muxinArray[0].pageId);
+
+				// 批量绑定tap事件，用于展示不同的页面
+				mui(".mui-bar-tab").on("tap", "a", function () {
+					var tabindex = this.getAttribute("tabindex");
+					plus.webview.show(muxinArray[tabindex].pageId, "fade-in", 200);
+
+					// 隐藏其他
+					for (var i = 0; i < muxinArray.length; i++) {
+						if (i != tabindex) {
+							plus.webview.hide(muxinArray[i].pageId, "fade-out", 200);
+						}
+					}
+				})
+				
+				// 延时加载
+				setTimeout("initData()", "1000");
+			});
+			function initData() {
+				var chatlist = plus.webview.getWebviewById("chatlist.html");
+				mui.fire(chatlist,'refresh');
+				var me = plus.webview.getWebviewById("me.html");
+				mui.fire(me,'refresh');
+			}
+		</script>
+	</body>
+</html>
