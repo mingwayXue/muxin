@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+mybatis:
+  type-aliases-package: com.xue.demo.pojo
+  mapper-locations: classpath:mapper/*.xml
+mapper:   # mapper文件配置，有了它，可以不用写xml文件和Dao文件一一对应（可不需要写xml文件）
+  mappers: com.xue.demo.utils.MyMapper
+  not-empty: false
+  identity: MYSQL
+pagehelper:   # 分页插件配置
+  helper-dialect: mysql
+  support-methods-arguments: true
+  params: count=countSql
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/muxin?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
+    username: root
+    password: xue123
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      auto-commit: true
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 15
+      idle-timeout: 600000
+      pool-name: DatebookHikariCP
+      max-lifetime: 28740000
+      connection-test-query: SELECT 1
+fdfs: # fastdfs配置
+  connect-timeout: 601
+  so-timeout: 1501
+  thumb-image:
+    height: 80
+    width: 80
+  tracker-list: 192.168.43.151:22122
+logging:  # 显示sql语句
+  level:
+    com.xue.demo.mapper: debug
+
